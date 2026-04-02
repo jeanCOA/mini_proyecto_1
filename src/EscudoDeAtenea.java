@@ -1,16 +1,13 @@
-public class EscudoDeAtenea extends CartaMagica implements Activable{
+public class EscudoDeAtenea extends CartaMagica {
+    private int boostDef = 800;
 
-    public EscudoDeAtenea(String nombre, String descripcion) {
-        super("Escudo de atenea. ", "Aumenta +800 de DEF a un montruo en tu campo. ");
+    public EscudoDeAtenea() {
+        super("Escudo de Atenea", 0, "Aumenta +800 DEF a un monstruo en tu campo.");
     }
 
     @Override
-    public void Activar(Contexto contexto) {
-
-        if (!contexto.getJugadorActivo().getCampo().isEmpty()){
-            contexto.getJugadorActivo().getCampo().get(0).aumentarDef(800);
-        }
-
+    public void activar(Contexto contexto) {
+        System.out.println(">>> Activando Escudo de Atenea: +800 DEF.");
+        contexto.getCampo().aplicarBoostDef(contexto.getJugadorActivo(), boostDef);
     }
-
 }

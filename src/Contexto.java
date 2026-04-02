@@ -7,6 +7,7 @@ public class Contexto {
         this.jugadorActivo = jugadorActivo;
     }
 
+    // Métodos que pide el UML
     public Jugador getJugadorActivo() {
         return jugadorActivo;
     }
@@ -19,11 +20,8 @@ public class Contexto {
         return campo;
     }
 
-    public void setCampo(CampoDeBatalla campo) {
-        this.campo = campo;
+    // Le pregunta al campo qué turno es
+    public int getTurnoActual() {
+        return campo.getTurnoActual();
     }
-
-    
-
-    
 }

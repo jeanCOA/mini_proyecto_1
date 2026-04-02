@@ -1,25 +1,14 @@
-public class CuraMilagrosa extends CartaMagica implements Activable {
+public class CuraMilagrosa extends CartaMagica {
+    private int puntosCura = 1000;
 
-    public CuraMilagrosa (){
-        super("Cura milagrosa. ", "Aumenta +1000 LP a tu contador de vida. ");
+    public CuraMilagrosa() {
+        super("Cura Milagrosa", 0, "Aumenta +1000 LP a tu contador de vida.");
     }
 
     @Override
-    public void Activar(Object contexto) {
-
-        Jugador activo = contexto.getJugadorActivo();
-        activo.setLp(activo.getLp() + 1000);
-        System.out.println(activo.getNombre() + "ahora tiene" + activo.getLp() + " LP.");
-
+    public void activar(Contexto contexto) {
+        Jugador j = contexto.getJugadorActivo();
+        j.setLp(j.getLp() + puntosCura);
+        System.out.println(">>> ¡Cura Milagrosa! " + j.getNombre() + " recupera 1000 LP.");
     }
-
-    @Override
-    public void aplicarEfecto(Jugador jugador) {
-        jugador.setLp(jugador.getLp() + 1000)
-    }
-
-    
-
-
-    
 }

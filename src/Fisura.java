@@ -1,21 +1,11 @@
-public class Fisura extends CartaMagica implements Activable {
-
-    public Fisura(){
-
-        super("Fisura. ", "Destruye el montruo con menor ATK del oponente. ");
-
+public class Fisura extends CartaMagica {
+    public Fisura() {
+        super("Fisura", 0, "Destruye al monstruo con menor ATK del oponente.");
     }
 
     @Override
-    public void aplicarEfecto(Jugador jugador) {
-        contexto.getCampo().destruirMonstruoMasDebilOponente(contexto.getJugadorActivo());
+    public void activar(Contexto contexto) {
+        System.out.println(">>> Activando Fisura: Buscando al más débil del rival...");
+        contexto.getCampo().destruirMenorAtkOponente(contexto.getJugadorActivo());
     }
-
-    @Override
-    public void Activar(Object contexto) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-
-    
 }

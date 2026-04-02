@@ -1,22 +1,14 @@
-public class EspadaDeZeus extends CartaMagica implements Activable{
-    
-    public EspadaDeZeus(){
+public class EspadaDeZeus extends CartaMagica {
+    private int boostAtk = 500;
 
-        super("Espada de Zeus", "Aumenta +500 ATK a un mounstruo en tu campo.");
-
+    public EspadaDeZeus() {
+        super("Espada de Zeus", 0, "Aumenta +500 ATK a un monstruo en tu campo.");
     }
 
     @Override
-    public void Activar(Contexto contexto) {
-
-        if (!contexto.getJugadorActivo().getCampo().isEmpty()){
-
-            contexto.getJugadorActivo().getCampo().get(0).aumentarATK(500);
-            System.out.println("Ataque aumentado.");
-
-        }
-
+    public void activar(Contexto contexto) {
+        System.out.println(">>> Activando Espada de Zeus: +500 ATK.");
+        // Se asume que CampoDeBatalla tiene un método para aplicar este boost
+        contexto.getCampo().aplicarBoostAtk(contexto.getJugadorActivo(), boostAtk);
     }
-    
-
-}
+}   

@@ -1,122 +1,67 @@
 public class CartaMonstruo extends Carta {
 
+    private int nivel;
     private int atk;
     private int def;
-    private int nivelCarta;
-    private int bonusAtkTemporal;
-    private int bonusDefTemporal;
-    private int turnosRestantesbonus;
-    private boolean haAtacado;
+    private int boostAtk;
+    private int boostDef;
     private boolean puedeAtacar;
 
     public CartaMonstruo(String nombre, int nivel, int atk, int def) {
         super(nombre);
-        this.nivelCarta        = nivel;
-        this.atk               = atk;
-        this.def               = def;
-        this.bonusAtkTemporal  = 0;
-        this.bonusDefTemporal  = 0;
-        this.turnosRestantesbonus = 0;
-        this.haAtacado         = false;
-        this.puedeAtacar       = false;
-    }
-
-
-
-    public int getAtk() {
-        return atk + bonusAtkTemporal;
-    }
-
-    public int getDef() {
-        return def + bonusDefTemporal;
+        this.nivel = nivel;
+        this.atk = atk;
+        this.def = def;
+        this.boostAtk = 0;
+        this.boostDef = 0;
+        this.puedeAtacar = false;
     }
 
     public int getNivel() {
-        return nivelCarta;
+        return nivel;
     }
 
+    public int getAtk() {
+        return atk + boostAtk;
+    }
 
+    public int getDef() {
+        return def + boostDef;
+    }
 
     public boolean puedeAtacar() {
-        return puedeAtacar && !haAtacado;
+        return puedeAtacar;
     }
 
-    public void setPuedeAtacar(boolean valor) {
-        this.puedeAtacar = valor;
+    public void setPuedeAtacar(boolean puedeAtacar) {
+        this.puedeAtacar = puedeAtacar;
     }
 
-    public void marcarComoAtacado() {
-        this.haAtacado = true;
+    public void aplicarBoostAtk(int incremento) {
+        boostAtk = incremento;
     }
 
-
-    public void resetTurno() {
-        this.haAtacado   = false;
-        this.puedeAtacar = true;
+    public void aplicarBoostDef(int incremento) {
+        boostDef = incremento;
     }
 
-
-
-    public void aplicarbonusAtk(int bonus, int turnos) {
-        this.bonusAtkTemporal    = bonus;
-        this.turnosRestantesbonus = turnos;
+    public void resetBoosts() {
+        boostAtk = 0;
+        boostDef = 0;
     }
 
-    public void aplicarbonusDef(int bonus, int turnos) {
-        this.bonusDefTemporal    = bonus;
-        this.turnosRestantesbonus = turnos;
+    public void reiniciarAtaques() {
+        puedeAtacar = true;
+        resetBoosts();
     }
 
-
-    public void descontarbonus() {
-        if (turnosRestantesbonus > 0) {
-            turnosRestantesbonus--;
-            if (turnosRestantesbonus == 0) {
-                bonusAtkTemporal = 0;
-                bonusDefTemporal = 0;
-            }
-        }
+    @Override
+    public String getTipo() {
+        return "MONSTRUO";
     }
-
-    // ── Combate ──────────────────────────────────────────────────
-
-    public void atacar(CartaMonstruo defensor, Jugador jugadorDefensor) {
-        System.out.println(getNombre() + " ataca a " + defensor.getNombre() + "!");
-
-        if (this.getAtk() > defensor.getAtk()) {
-            int danio = this.getAtk() - defensor.getAtk();
-            jugadorDefensor.getCampo().remove(defensor);
-            jugadorDefensor.recibirDanio(danio);
-            System.out.println(defensor.getNombre() + " fue destruido!");
-            System.out.println("Daño causado: " + danio + " LP");
-        } else if (this.getAtk() == defensor.getAtk()) {
-            jugadorDefensor.getCampo().remove(defensor);
-            System.out.println("¡Empate! Ambos monstruos son destruidos.");
-        } else {
-            System.out.println(getNombre() + " no pudo destruir a " + defensor.getNombre());
-        }
-
-        this.marcarComoAtacado();
-    }
-
-    public void ataqueDirecto(Jugador jugadorDefensor) {
-        System.out.println(getNombre() + " ataca directamente!");
-        jugadorDefensor.recibirDanio(this.getAtk());
-        System.out.println("Daño causado: " + this.getAtk() + " LP");
-        this.marcarComoAtacado();
-    }
-
-    // ── toString ─────────────────────────────────────────────────
 
     @Override
     public String toString() {
-        String bonus = bonusAtkTemporal > 0 || bonusDefTemporal > 0
-            ? " [bonus activo: " + turnosRestantesbonus + " turno(s)]"
-            : "";
-        return "[MONSTRUO] " + getNombre()
-             + " | Nivel: " + nivelCarta
-             + " | ATK: "  + getAtk()
-             + " | DEF: "  + getDef()
-             + bonus;
+        return "[MONSTRUO] " + getNombre() + " | Nivel: " + nivel + " | ATK: " + getAtk() + " | DEF: " + getDef();
     }
 }

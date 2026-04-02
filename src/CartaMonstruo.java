@@ -55,10 +55,7 @@ public class CartaMonstruo extends Carta {
         resetBoosts();
     }
 
-    @Override
-    public String getTipo() {
-        return "MONSTRUO";
-    }
+ 
 
     @Override
     public String toString() {

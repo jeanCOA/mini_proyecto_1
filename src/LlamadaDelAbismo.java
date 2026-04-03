@@ -6,9 +6,9 @@ public class LlamadaDelAbismo extends CartaMagica {
     }
 
     @Override
-    public void activar(Contexto contexto) {
-        Jugador j = contexto.getJugadorActivo();
-        System.out.println(">>> Llamada del Abismo: Pagando 500 LP para robar...");
+    public void activar(Contexto ctx) {
+        Jugador j = ctx.getJugadorActivo();
+        System.out.println(">>> Llamada del Abismo: Pagando " + costo + " LP para robar.");
         j.setLp(j.getLp() - costo);
         j.robar();
     }

@@ -6,8 +6,9 @@ public class EscudoDeAtenea extends CartaMagica {
     }
 
     @Override
-    public void activar(Contexto contexto) {
-        System.out.println(">>> Activando Escudo de Atenea: +800 DEF.");
-        contexto.getCampo().aplicarBoostDef(contexto.getJugadorActivo(), boostDef);
+    public void activar(Contexto ctx) {
+        System.out.println(">>> Escudo de Atenea otorga +" + boostDef + " DEF.");
+        // Según UML: invoca campo.aplicarBoostDef
+        ctx.getCampo().aplicarBoostDef(ctx.getJugadorActivo(), boostDef);
     }
 }

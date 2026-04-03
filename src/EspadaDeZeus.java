@@ -6,9 +6,9 @@ public class EspadaDeZeus extends CartaMagica {
     }
 
     @Override
-    public void activar(Contexto contexto) {
-        System.out.println(">>> Activando Espada de Zeus: +500 ATK.");
-        // Se asume que CampoDeBatalla tiene un método para aplicar este boost
-        contexto.getCampo().aplicarBoostAtk(contexto.getJugadorActivo(), boostAtk);
+    public void activar(Contexto ctx) {
+        System.out.println(">>> Espada de Zeus otorga +" + boostAtk + " ATK.");
+        // Según UML: invoca campo.aplicarBoostAtk
+        ctx.getCampo().aplicarBoostAtk(ctx.getJugadorActivo(), boostAtk);
     }
-}   
+}

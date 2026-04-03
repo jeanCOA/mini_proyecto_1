@@ -4,8 +4,9 @@ public class Fisura extends CartaMagica {
     }
 
     @Override
-    public void activar(Contexto contexto) {
-        System.out.println(">>> Activando Fisura: Buscando al más débil del rival...");
-        contexto.getCampo().destruirMenorAtkOponente(contexto.getJugadorActivo());
+    public void activar(Contexto ctx) {
+        System.out.println(">>> Activando Fisura: Destruyendo al monstruo más débil del rival.");
+        // Según UML: invoca destruirMenorAtkOponente
+        ctx.getCampo().destruirMenorAtkOponente(ctx.getJugadorActivo());
     }
 }

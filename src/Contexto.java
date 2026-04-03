@@ -1,27 +1,30 @@
+
 public class Contexto {
-    private Jugador jugadorActivo;
+    
+    private Jugador jugActivo;
+    private Jugador oponente;
     private CampoDeBatalla campo;
 
-    public Contexto(CampoDeBatalla campo, Jugador jugadorActivo) {
+    public Contexto(Jugador jugActivo, Jugador oponente, CampoDeBatalla campo) {
+        this.jugActivo = jugActivo;
+        this.oponente = oponente;
         this.campo = campo;
-        this.jugadorActivo = jugadorActivo;
     }
 
-    // Métodos que pide el UML
     public Jugador getJugadorActivo() {
-        return jugadorActivo;
+        return jugActivo;
     }
 
-    public void setJugadorActivo(Jugador jugadorActivo) {
-        this.jugadorActivo = jugadorActivo;
+    public Jugador getOponente() {
+        return oponente;
     }
 
     public CampoDeBatalla getCampo() {
         return campo;
     }
 
-    // Le pregunta al campo qué turno es
-    public int getTurnoActual() {
+    public int getTurno() {
         return campo.getTurnoActual();
     }
+    
 }

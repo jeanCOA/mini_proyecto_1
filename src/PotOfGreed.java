@@ -6,7 +6,7 @@ public class PotOfGreed extends CartaMagica implements Activable {
     @Override
     public void activar(Contexto ctx) {
         System.out.println(">>> Activando Pot of Greed: Robando 2 cartas...");
-        ctx.getJugadorActivo().robar();
-        ctx.getJugadorActivo().robar();
+        ctx.getJugadorActivo().robarCarta();
+        ctx.getJugadorActivo().robarCarta();
     }
 }

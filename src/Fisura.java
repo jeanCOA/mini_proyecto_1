@@ -1,6 +1,6 @@
-public class Fisura extends CartaMagica {
+public class Fisura extends CartaMagica implements Activable {
     public Fisura() {
-        super("Fisura", 0, "Destruye al monstruo con menor ATK del oponente.");
+        super("Fisura", "Destruye al monstruo con menor ATK del oponente.");
     }
 
     @Override

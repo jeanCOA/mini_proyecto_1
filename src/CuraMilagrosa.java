@@ -1,6 +1,6 @@
-public class CuraMilagrosa extends CartaMagica {
+public class CuraMilagrosa extends CartaMagica implements Activable {
     public CuraMilagrosa() {
-        super("Cura Milagrosa", 0, "Aumenta +1000 LP a tu contador de vida.");
+        super("Cura Milagrosa", "Aumenta +1000 LP a tu contador de vida.");
     }
 
     @Override

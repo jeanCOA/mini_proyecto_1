@@ -1,8 +1,8 @@
-public class EscudoDeAtenea extends CartaMagica {
+public class EscudoDeAtenea extends CartaMagica implements Activable{
     private int boostDef = 800;
 
     public EscudoDeAtenea() {
-        super("Escudo de Atenea", 0, "Aumenta +800 DEF a un monstruo en tu campo.");
+        super("Escudo de Atenea", "Aumenta +800 DEF a un monstruo en tu campo.");
     }
 
     @Override

@@ -3,8 +3,8 @@ public abstract class CartaMagica extends Carta implements Activable {
    
     private String descripcion;
 
-    public CartaMagica(String nombre, int nivel, String descripcion) {
-        super(nombre, nivel);
+    public CartaMagica(String nombre, String descripcion) {
+        super(nombre);
         this.descripcion = descripcion;
     }
 

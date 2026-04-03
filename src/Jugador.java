@@ -42,7 +42,7 @@ public class Jugador {
 
     public void robarCarta() {
         if (mazo != null) {
-            Carta c = mazo.robarCarta();
+            Carta c = mazo.robar();
             if (c != null) {
                 mano.add(c);
             }

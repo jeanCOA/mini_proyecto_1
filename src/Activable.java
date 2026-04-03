@@ -1,3 +1,4 @@
 public interface Activable {
-    void activar(Contexto ctx);
+    void activar(Contexto ctx);          
+    
 }

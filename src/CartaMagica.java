@@ -1,17 +1,27 @@
 public abstract class CartaMagica extends Carta implements Activable {
-    protected String descripcion; 
+    
+   
+    private String descripcion;
+
     public CartaMagica(String nombre, int nivel, String descripcion) {
-        super(nombre, nivel); // El nombre y nivel se van a la clase Carta
-        this.descripcion = descripcion; 
+        super(nombre, nivel);
+        this.descripcion = descripcion;
     }
 
-    // Este método es el que usará tu Menú para mostrar qué hace la carta
+    @Override
+    public abstract void activar(Contexto ctx);
+
     public String getDescripcion() {
-        return descripcion;
+        return this.descripcion;
     }
 
     @Override
     public String getTipo() {
         return "MAGICA";
+    }
+
+    @Override
+    public String toString() {
+        return "[" + getTipo() + "] " + getNombre() + ": " + descripcion;
     }
 }

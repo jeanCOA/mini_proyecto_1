@@ -34,6 +34,23 @@ public class Mazo {
         return cartas.size();
     }
 
+    public List<Carta> repartir(int n) {
+        List<Carta> manoRepartida = new ArrayList<>();
+        
+        for (int i = 0; i < n; i++) {
+            Carta cartaRobada = this.robar(); // Reutilizamos el método robar() que ya maneja el remove(0)
+            
+            if (cartaRobada != null) {
+                manoRepartida.add(cartaRobada);
+            } else {
+                // Si el mazo se vacía antes de terminar de repartir, dejamos de iterar
+                break; 
+            }
+        }
+        
+        return manoRepartida;
+    }
+
     // Para meter las que vienen de la Fábrica
     public void agregarCartas(List<? extends Carta> nuevasCartas) {
         this.cartas.addAll(nuevasCartas);

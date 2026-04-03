@@ -63,4 +63,5 @@ public String getTipo() {
     public String toString() {
         return "[MONSTRUO] " + getNombre() + " | nivelCarta: " + nivelCarta + " | ATK: " + getAtk() + " | DEF: " + getDef();
     }
+    
 }

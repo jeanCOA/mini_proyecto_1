@@ -11,4 +11,5 @@ public abstract class Carta {
     }
 
     public abstract String toString();
+    
 }

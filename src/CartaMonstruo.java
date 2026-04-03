@@ -1,15 +1,15 @@
 public class CartaMonstruo extends Carta {
 
-    private int nivel;
+    private int nivelCarta;
     private int atk;
     private int def;
     private int boostAtk;
     private int boostDef;
     private boolean puedeAtacar;
 
-    public CartaMonstruo(String nombre, int nivel, int atk, int def) {
+    public CartaMonstruo(String nombre, int nivelCarta, int atk, int def) {
         super(nombre);
-        this.nivel = nivel;
+        this.nivelCarta = nivelCarta;
         this.atk = atk;
         this.def = def;
         this.boostAtk = 0;
@@ -17,8 +17,8 @@ public class CartaMonstruo extends Carta {
         this.puedeAtacar = false;
     }
 
-    public int getNivel() {
-        return nivel;
+    public int getnivelCarta() {
+        return nivelCarta;
     }
 
     public int getAtk() {
@@ -56,9 +56,11 @@ public class CartaMonstruo extends Carta {
     }
 
  
-
+public String getTipo() {
+    return "MONSTRUO";
+}
     @Override
     public String toString() {
-        return "[MONSTRUO] " + getNombre() + " | Nivel: " + nivel + " | ATK: " + getAtk() + " | DEF: " + getDef();
+        return "[MONSTRUO] " + getNombre() + " | nivelCarta: " + nivelCarta + " | ATK: " + getAtk() + " | DEF: " + getDef();
     }
 }

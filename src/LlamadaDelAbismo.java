@@ -10,6 +10,6 @@ public class LlamadaDelAbismo extends CartaMagica implements Activable {
         Jugador j = ctx.getJugadorActivo();
         System.out.println(">>> Llamada del Abismo: Pagando " + costo + " LP para robar.");
         j.setLp(j.getLp() - costo);
-        j.robar();
+        j.robarCarta();
     }
 }

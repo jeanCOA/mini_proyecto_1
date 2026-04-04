@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class Jugador {
     private String nombre;
@@ -8,6 +9,8 @@ public class Jugador {
     private List<Carta> mano;
     private Mazo mazo;
     private List<CartaMonstruo> campo;
+
+    private static final Scanner scanner = new Scanner(System.in);
 
     public Jugador(String nombre, Mazo mazo) {
         this.nombre = nombre;
@@ -106,6 +109,171 @@ public class Jugador {
 
     public void turnoActivo(Contexto ctx) {
         System.out.println("\n=== TURNO DE: " + nombre.toUpperCase() + " (LP: " + Lp + ") ===");
-        
+
+        boolean turnoTerminado = false;
+
+        while (!turnoTerminado) {
+            mostrarEstado(ctx);
+            System.out.println("\n¿Qué deseas hacer?");
+            System.out.println("  1. Jugar una carta");
+            System.out.println("  2. Atacar con un monstruo");
+            System.out.println("  3. Terminar turno");
+            System.out.print("Opción: ");
+
+            String input = scanner.nextLine().trim();
+
+            switch (input) {
+                case "1":
+                    jugarCartaDesdeMenu(ctx);
+                    break;
+                case "2":
+                    atacarDesdeMenu(ctx);
+                    break;
+                case "3":
+                    turnoTerminado = true;
+                    System.out.println(nombre + " termina su turno.");
+                    break;
+                default:
+                    System.out.println("Opción inválida. Intenta de nuevo.");
+            }
+        }
+    }
+
+    private void mostrarEstado(Contexto ctx) {
+        Jugador oponente = ctx.getOponente();
+        System.out.println("\n──────────────────────────────");
+        System.out.println("  " + nombre + " | LP: " + Lp
+            + " | Cartas en mano: " + mano.size()
+            + " | Cartas en mazo: " + mazo.tamano());
+        System.out.println("  Monstruos en campo:");
+        if (campo.isEmpty()) {
+            System.out.println("    (ninguno)");
+        } else {
+            for (int i = 0; i < campo.size(); i++) {
+                CartaMonstruo m = campo.get(i);
+                String estado = m.puedeAtacar() ? "puede atacar" : "ya atacó";
+                System.out.println("    " + (i + 1) + ". " + m + " [" + estado + "]");
+            }
+        }
+        System.out.println("  ── Oponente: " + oponente.getNombre()
+            + " | LP: " + oponente.getLp()
+            + " | Cartas en mano: " + oponente.getMano().size()
+            + " | Cartas en mazo: " + oponente.getMazo().tamano());
+        System.out.println("  Monstruos del oponente en campo:");
+        if (oponente.getCampo().isEmpty()) {
+            System.out.println("    (ninguno)");
+        } else {
+            for (int i = 0; i < oponente.getCampo().size(); i++) {
+                System.out.println("    " + (i + 1) + ". " + oponente.getCampo().get(i));
+            }
+        }
+        System.out.println("──────────────────────────────");
+    }
+
+    private void jugarCartaDesdeMenu(Contexto ctx) {
+        if (mano.isEmpty()) {
+            System.out.println("No tienes cartas en la mano.");
+            return;
+        }
+
+        System.out.println("\n── Tu mano ──");
+        for (int i = 0; i < mano.size(); i++) {
+            System.out.println("  " + (i + 1) + ". " + mano.get(i));
+        }
+        System.out.println("  0. Cancelar");
+        System.out.print("Elige una carta: ");
+
+        String input = scanner.nextLine().trim();
+        int eleccion;
+        try {
+            eleccion = Integer.parseInt(input);
+        } catch (NumberFormatException e) {
+            System.out.println("Entrada inválida.");
+            return;
+        }
+
+        if (eleccion == 0) return;
+
+        if (eleccion < 1 || eleccion > mano.size()) {
+            System.out.println("Número fuera de rango.");
+            return;
+        }
+
+        jugarCarta(eleccion - 1, ctx);
+    }
+
+    private void atacarDesdeMenu(Contexto ctx) {
+        if (campo.isEmpty()) {
+            System.out.println("No tienes monstruos en campo.");
+            return;
+        }
+
+        // Filtrar monstruos que pueden atacar
+        List<CartaMonstruo> disponibles = new ArrayList<>();
+        for (CartaMonstruo m : campo) {
+            if (m.puedeAtacar()) disponibles.add(m);
+        }
+
+        if (disponibles.isEmpty()) {
+            System.out.println("Ningún monstruo puede atacar este turno.");
+            return;
+        }
+
+        System.out.println("\n── Elige el monstruo atacante ──");
+        for (int i = 0; i < disponibles.size(); i++) {
+            System.out.println("  " + (i + 1) + ". " + disponibles.get(i));
+        }
+        System.out.println("  0. Cancelar");
+        System.out.print("Opción: ");
+
+        String input = scanner.nextLine().trim();
+        int eleccion;
+        try {
+            eleccion = Integer.parseInt(input);
+        } catch (NumberFormatException e) {
+            System.out.println("Entrada inválida.");
+            return;
+        }
+
+        if (eleccion == 0) return;
+        if (eleccion < 1 || eleccion > disponibles.size()) {
+            System.out.println("Número fuera de rango.");
+            return;
+        }
+
+        CartaMonstruo atacante = disponibles.get(eleccion - 1);
+        Jugador oponente = ctx.getOponente();
+
+        if (oponente.getCampo().isEmpty()) {
+            // Ataque directo
+            ctx.getCampo().ataqueDirecto(atacante, oponente);
+        } else {
+            // Elegir monstruo defensor
+            System.out.println("\n── Elige el monstruo a atacar ──");
+            List<CartaMonstruo> defensores = oponente.getCampo();
+            for (int i = 0; i < defensores.size(); i++) {
+                System.out.println("  " + (i + 1) + ". " + defensores.get(i));
+            }
+            System.out.println("  0. Cancelar");
+            System.out.print("Opción: ");
+
+            String inputDef = scanner.nextLine().trim();
+            int eleccionDef;
+            try {
+                eleccionDef = Integer.parseInt(inputDef);
+            } catch (NumberFormatException e) {
+                System.out.println("Entrada inválida.");
+                return;
+            }
+
+            if (eleccionDef == 0) return;
+            if (eleccionDef < 1 || eleccionDef > defensores.size()) {
+                System.out.println("Número fuera de rango.");
+                return;
+            }
+
+            CartaMonstruo defensor = defensores.get(eleccionDef - 1);
+            ctx.getCampo().resolverCombate(atacante, defensor);
+        }
     }
 }

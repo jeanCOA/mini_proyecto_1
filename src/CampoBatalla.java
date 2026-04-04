@@ -21,20 +21,15 @@ public class CampoBatalla {
         jugador1.getMazo().barajar();
         jugador2.getMazo().barajar();
 
-        // 2. Repartir 5 cartas iniciales a cada jugador
-        jugador1.getMano().addAll(jugador1.getMazo().repartir(5));
-        jugador2.getMano().addAll(jugador2.getMazo().repartir(5));
-
-        System.out.println(jugador1.getNombre() + " recibió 5 cartas.");
-        System.out.println(jugador2.getNombre() + " recibió 5 cartas.");
+        // 2. Repartir 5 cartas iniciales
+        repartirCartasIniciales();
 
         // 3. Elegir al azar quién empieza
         Random random = new Random();
         jugadorActivo = random.nextBoolean() ? jugador1 : jugador2;
-
         System.out.println("\n🎲 " + jugadorActivo.getNombre() + " empieza el duelo!\n");
 
-        // 4. Arrancar el bucle del duelo
+        // 4. Bucle del duelo
         while (!hayGanador()) {
             ejecutarTurno();
         }
@@ -47,33 +42,48 @@ public class CampoBatalla {
         System.out.println("\"Confía en el corazón de las cartas\" — Yugi Muto");
     }
 
+    private void repartirCartasIniciales() {
+        jugador1.getMano().addAll(jugador1.getMazo().repartir(5));
+        jugador2.getMano().addAll(jugador2.getMazo().repartir(5));
+        System.out.println(jugador1.getNombre() + " recibió 5 cartas.");
+        System.out.println(jugador2.getNombre() + " recibió 5 cartas.");
+    }
+
     public void ejecutarTurno() {
         turnoActual++;
-        System.out.println("\n── Turno " + turnoActual + " ──");
+        System.out.println("\n══════════════════════════════");
+        System.out.println("  TURNO " + turnoActual + " — " + jugadorActivo.getNombre());
+        System.out.println("══════════════════════════════");
 
-        // 1. El jugador activo roba 1 carta
-        if (jugadorActivo.tieneCartasEnMazo()) {
+        if (esPrimerTurno) {
+            // El jugador que empieza no roba carta en su primer turno
+            System.out.println("[Primer turno] " + jugadorActivo.getNombre()
+                + " no roba carta y no puede atacar.");
+
+            // Bloquear ataques
+            for (CartaMonstruo m : jugadorActivo.getCampo()) {
+                m.marcarComoAtacado();
+            }
+        } else {
+            // Robo automático
+            if (!jugadorActivo.tieneCartasEnMazo()) {
+                System.out.println(jugadorActivo.getNombre()
+                    + " no tiene cartas en el mazo. ¡Pierde el duelo!");
+                return;
+            }
             jugadorActivo.robarCarta();
             System.out.println(jugadorActivo.getNombre() + " robó una carta.");
-        } else {
-            System.out.println(jugadorActivo.getNombre() 
-                + " no tiene cartas en el mazo. ¡Pierde el duelo!");
-            return;
+
+            // Decrementar mejoras temporales
+            for (CartaMonstruo m : jugadorActivo.getCampo()) {
+                m.decrementarMejora();
+            }
         }
 
-        
-        for (CartaMonstruo m : jugadorActivo.getCampo()) {
-            m.decrementarMejora();
-        }
-
-        
-        mostrarEstadoCampo();
-
-        
+        // Turno interactivo
         Contexto ctx = new Contexto(jugadorActivo, getOponente(), this);
         jugadorActivo.turnoActivo(ctx);
 
-        
         cambiarTurno();
     }
 
@@ -99,7 +109,7 @@ public class CampoBatalla {
             eliminarMonstruo(atacante, jugadorActivo);
             System.out.println("¡Empate! Ambos monstruos destruidos.");
         } else {
-            System.out.println(atacante.getNombre() + " no pudo destruir a " 
+            System.out.println(atacante.getNombre() + " no pudo destruir a "
                 + defensor.getNombre() + ".");
         }
 
@@ -107,7 +117,7 @@ public class CampoBatalla {
     }
 
     public void ataqueDirecto(CartaMonstruo atacante, Jugador oponente) {
-        System.out.println(atacante.getNombre() + " ataca directamente a " 
+        System.out.println(atacante.getNombre() + " ataca directamente a "
             + oponente.getNombre() + "!");
         oponente.recibirDanio(atacante.getAtk());
         atacante.marcarComoAtacado();

@@ -12,6 +12,7 @@ public class FabricaDeCartas {
     }
 
 
+    
     public static List<CartaMonstruo> crearMonstruos(){
         List<CartaMonstruo> monstruos = new ArrayList<>();
 

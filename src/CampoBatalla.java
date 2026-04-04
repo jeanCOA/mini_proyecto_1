@@ -5,7 +5,7 @@ public class CampoBatalla {
     private Jugador jugador2;
     private Jugador jugadorActivo;
     private boolean esPrimerTurno = true;
-    private int turnoActual = 0;
+    private byte turnoActual = 0;
 
     public CampoBatalla(Jugador jugador1, Jugador jugador2) {
         this.jugador1 = jugador1;
@@ -113,13 +113,13 @@ public class CampoBatalla {
         atacante.marcarComoAtacado();
     }
 
-    public void aplicarBoostAtk(Jugador j, int boost) {
+    public void aplicarBoostAtk(Jugador j, short boost) {
         if (!j.getCampo().isEmpty()) {
             j.getCampo().get(0).aplicarBoostAtk(boost);
         }
     }
 
-    public void aplicarBoostDef(Jugador j, int boost) {
+    public void aplicarBoostDef(Jugador j, short boost) {
         if (!j.getCampo().isEmpty()) {
             j.getCampo().get(0).aplicarBoostDef(boost);
         }

@@ -19,26 +19,28 @@ public class Jugador {
     }
 
     public String getNombre() {
-         return nombre;
+        return nombre;
     }
 
     public int getLp() {
-         return Lp; 
+        return Lp;
     }
 
     public void setLp(int lp) {
-         this.Lp = lp; 
-    }
-    public List<Carta> getMano() {
-         return mano; 
-    }
-    public List<CartaMonstruo> getCampo() {
-         return campo; 
-    }
-    public Mazo getMazo() {
-         return mazo; 
+        this.Lp = lp;
     }
 
+    public List<Carta> getMano() {
+        return mano;
+    }
+
+    public List<CartaMonstruo> getCampo() {
+        return campo;
+    }
+
+    public Mazo getMazo() {
+        return mazo;
+    }
 
     public void robarCarta() {
         if (mazo != null) {
@@ -63,7 +65,7 @@ public class Jugador {
             } else {
                 System.out.println("Ya has invocado un monstruo este turno.");
             }
-        } else if (carta.getTipo().equals("MAGIA")) {
+        } else if (carta.getTipo().equals("MAGICA")) {
             if (carta instanceof Activable) {
                 ((Activable) carta).activar(ctx);
                 mano.remove(indice);
@@ -104,6 +106,6 @@ public class Jugador {
 
     public void turnoActivo(Contexto ctx) {
         System.out.println("\n=== TURNO DE: " + nombre.toUpperCase() + " (LP: " + Lp + ") ===");
-        // Aquí iría el Scanner para interactuar con el usuario
+        
     }
 }

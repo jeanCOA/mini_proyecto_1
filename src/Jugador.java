@@ -3,7 +3,7 @@ import java.util.List;
 
 public class Jugador {
     private String nombre;
-    private int Lp = 8000;
+    private short Lp = 8000;
     private boolean yaJugoCartaEsteTurno = false;
     private List<Carta> mano;
     private Mazo mazo;

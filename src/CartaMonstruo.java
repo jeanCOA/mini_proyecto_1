@@ -1,10 +1,10 @@
 public class CartaMonstruo extends Carta {
 
-    private int nivelCarta;
-    private int atk;
-    private int def;
-    private int boostAtk;
-    private int boostDef;
+    private byte nivelCarta;
+    private short atk;
+    private short def;
+    private short boostAtk;
+    private short boostDef;
     private boolean puedeAtacar;
 
     public CartaMonstruo(String nombre, int nivelCarta, int atk, int def) {

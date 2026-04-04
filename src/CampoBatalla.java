@@ -2,7 +2,7 @@ public class CampoBatalla {
     private Jugador jugador1;
     private Jugador jugador2;
     private boolean esPrimerTurno = true; // Variable para controlar el primer turno
-    private int turnoActual = 0; // Variable para llevar el conteo de los turnos
+    private byte turnoActual = 0; // Variable para llevar el conteo de los turnos
 
     public CampoBatalla(Jugador jugador1, Jugador jugador2) {
         this.jugador1 = jugador1;

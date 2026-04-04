@@ -6,8 +6,12 @@ public class Mazo {
     // lista de objetos Carta
     private List<Carta> cartas;
 
-    public Mazo() {
+    public Mazo(boolean usarFabrica) {
         this.cartas = new ArrayList<>();
+        if(usarFabrica){
+            this.agregarCartas(FabricaDeCartas.crearMazoCompleto());
+            this.barajar();
+        }
     }
 
     // Mezcla las cartas aleatoriamente

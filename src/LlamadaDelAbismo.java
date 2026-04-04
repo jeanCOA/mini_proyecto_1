@@ -1,8 +1,8 @@
-public class LlamadaDelAbismo extends CartaMagica implements Activable {
+public class LlamadaDelAbismo extends CartaMagica {
     private int costo = 500;
 
     public LlamadaDelAbismo() {
-        super("Llamada del Abismo",  "Robas 1 carta, pero pierdes 500 LP.");
+        super("Llamada del Abismo", "Robas 1 carta, pero pierdes 500 LP.");
     }
 
     @Override

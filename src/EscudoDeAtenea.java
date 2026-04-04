@@ -1,4 +1,4 @@
-public class EscudoDeAtenea extends CartaMagica implements Activable{
+public class EscudoDeAtenea extends CartaMagica {
     private int boostDef = 800;
 
     public EscudoDeAtenea() {
@@ -8,7 +8,6 @@ public class EscudoDeAtenea extends CartaMagica implements Activable{
     @Override
     public void activar(Contexto ctx) {
         System.out.println(">>> Escudo de Atenea otorga +" + boostDef + " DEF.");
-        // Según UML: invoca campo.aplicarBoostDef
         ctx.getCampo().aplicarBoostDef(ctx.getJugadorActivo(), boostDef);
     }
 }

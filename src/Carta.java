@@ -10,6 +10,7 @@ public abstract class Carta {
         return nombre;
     }
 
+    public abstract String getTipo();
     public abstract String toString();
     
 }

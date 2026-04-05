@@ -72,7 +72,8 @@ public class Jugador {
                 mano.remove(indice);
                 yaJugoCartaEsteTurno = true;
 
-                monstruo.setPuedeAtacar(true);
+                //1
+                // monstruo.setPuedeAtacar(true);
                 System.out.println(nombre + " invocó a " + carta.getNombre());
             } else {
                 System.out.println("Ya has invocado un monstruo este turno.");
@@ -160,7 +161,7 @@ public class Jugador {
         } else {
             for (int i = 0; i < campo.size(); i++) {
                 CartaMonstruo m = campo.get(i);
-                String estado = m.puedeAtacar() ? "puede atacar" : "ya atacó";
+                String estado = m.puedeAtacar() ? "puede atacar" : "no puede atacar este turno";
                 System.out.println("    " + (i + 1) + ". " + m + " [" + estado + "]");
             }
         }

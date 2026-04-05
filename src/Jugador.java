@@ -12,14 +12,18 @@ public class Jugador {
 
     private static final Scanner scanner = new Scanner(System.in);
 
-    public Jugador(String nombre, Mazo mazo) {
+    public Jugador(String nombre) {
         this.nombre = nombre;
-        this.mazo = mazo;
+        this.mazo = new Mazo(false);
         this.Lp = 8000;
         this.mano = new ArrayList<>();
         this.campo = new ArrayList<>();
         this.yaJugoCartaEsteTurno = false;
     }
+
+    public void setMazo(Mazo mazo) {
+    this.mazo = mazo;
+}
 
     public String getNombre() {
         return nombre;
@@ -61,9 +65,14 @@ public class Jugador {
 
         if (carta.getTipo().equals("MONSTRUO")) {
             if (!yaJugoCartaEsteTurno) {
+                
+                CartaMonstruo monstruo = (CartaMonstruo) carta;
+
                 campo.add((CartaMonstruo) carta);
                 mano.remove(indice);
                 yaJugoCartaEsteTurno = true;
+
+                monstruo.setPuedeAtacar(true);
                 System.out.println(nombre + " invocó a " + carta.getNombre());
             } else {
                 System.out.println("Ya has invocado un monstruo este turno.");

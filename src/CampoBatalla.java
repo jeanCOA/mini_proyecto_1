@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
 public class CampoBatalla {
@@ -17,9 +20,9 @@ public class CampoBatalla {
         System.out.println("║   ¡DUELO DE YU-GI-OH!        ║");
         System.out.println("╚══════════════════════════════╝");
 
-        // 1. Barajar los mazos de ambos jugadores
+        /* 1. Barajar los mazos de ambos jugadores
         jugador1.getMazo().barajar();
-        jugador2.getMazo().barajar();
+        jugador2.getMazo().barajar(); */
 
         // 2. Repartir 5 cartas iniciales
         repartirCartasIniciales();
@@ -27,6 +30,7 @@ public class CampoBatalla {
         // 3. Elegir al azar quién empieza
         Random random = new Random();
         jugadorActivo = random.nextBoolean() ? jugador1 : jugador2;
+
         System.out.println("\n🎲 " + jugadorActivo.getNombre() + " empieza el duelo!\n");
 
         // 4. Bucle del duelo
@@ -43,16 +47,25 @@ public class CampoBatalla {
     }
 
     private void repartirCartasIniciales() {
-        jugador1.getMano().addAll(jugador1.getMazo().repartir(5));
-        jugador2.getMano().addAll(jugador2.getMazo().repartir(5));
-        System.out.println(jugador1.getNombre() + " recibió 5 cartas.");
-        System.out.println(jugador2.getNombre() + " recibió 5 cartas.");
-    }
+    List<Carta> MazoCompleto = FabricaDeCartas.crearMazoCompleto();
+    Collections.shuffle(MazoCompleto);
+
+    List<Carta> mazo1 = new ArrayList<>(MazoCompleto.subList(0, 20));
+    List<Carta> mazo2 = new ArrayList<>(MazoCompleto.subList(20, 40));
+
+    jugador1.getMazo().agregarCartas(mazo1);
+    jugador2.getMazo().agregarCartas(mazo2);
+
+    jugador1.getMano().addAll(jugador1.getMazo().repartir(5));
+    jugador2.getMano().addAll(jugador2.getMazo().repartir(5));
+
+    System.out.println("Cartas repartidas: " + jugador1.getNombre() + " y " + jugador2.getNombre());
+}
 
     public void ejecutarTurno() {
         turnoActual++;
         System.out.println("\n══════════════════════════════");
-        System.out.println("  TURNO " + turnoActual + " — " + jugadorActivo.getNombre());
+        System.out.println("  TURNO " + turnoActual + " : " + jugadorActivo.getNombre());
         System.out.println("══════════════════════════════");
 
         if (esPrimerTurno) {

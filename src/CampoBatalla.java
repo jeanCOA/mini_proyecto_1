@@ -109,32 +109,46 @@ public class CampoBatalla {
     }
 
 
-    public void resolverCombate(CartaMonstruo atacante, CartaMonstruo defensor, Jugador jugActivo, Jugador oponente) {
+
+        public void resolverCombate(CartaMonstruo atacante, CartaMonstruo defensor, Jugador jugActivo, Jugador oponente) {
         System.out.println(atacante.getNombre() + " ataca a " + defensor.getNombre() + "!");
 
-        if (atacante.getAtk() > defensor.getAtk()) {
-            
-            int danio = atacante.getAtk() - defensor.getAtk();
-            eliminarMonstruo(defensor, oponente);
-            oponente.recibirDanio(danio);
-            System.out.println(defensor.getNombre() + " destruido. " + oponente.getNombre() + " pierde " + danio + " LP.");
+        int atkAtacante = atacante.getAtk();
+        boolean defensorEnDefensa = defensor.estaEnModoDefensa();
 
-        } else if (atacante.getAtk() == defensor.getAtk()) {
-        
-            eliminarMonstruo(defensor, oponente);
-            eliminarMonstruo(atacante, jugActivo);
-            System.out.println("¡Empate! Ambos monstruos fueron destruidos.");
+        if (defensorEnDefensa) {
+            int defDefensor = defensor.getDef();
+            System.out.println(defensor.getNombre() + " está en MODO DEFENSA (DEF: " + defDefensor + ").");
 
+            if (atkAtacante > defDefensor) {
+                eliminarMonstruo(defensor, oponente);
+                System.out.println(defensor.getNombre() + " fue destruido en modo defensa.");
+                
+            } else {
+                System.out.println("¡Ataque bloqueado! La defensa de " + defensor.getNombre() + " es demasiado alta.");
+            }
         } else {
-        
-            int danio = defensor.getAtk() - atacante.getAtk();
-            jugActivo.recibirDanio(danio);
-            System.out.println(atacante.getNombre() + " fue repelido. "
-                + jugActivo.getNombre() + " pierde " + danio + " LP.");
+            
+            if (atkAtacante > defensor.getAtk()) {
+                int danio = atkAtacante - defensor.getAtk();
+                eliminarMonstruo(defensor, oponente);
+                oponente.recibirDanio(danio);
+                System.out.println(defensor.getNombre() + " destruido. " + oponente.getNombre() + " pierde " + danio + " LP.");
+            } else if (atkAtacante == defensor.getAtk()) {
+                eliminarMonstruo(defensor, oponente);
+                eliminarMonstruo(atacante, jugActivo);
+                System.out.println("¡Empate! Ambos monstruos fueron destruidos.");
+            } else {
+                int danio = defensor.getAtk() - atkAtacante;
+                jugActivo.recibirDanio(danio);
+                System.out.println(atacante.getNombre() + " fue repelido. " 
+                    + jugActivo.getNombre() + " pierde " + danio + " LP.");
+            }
         }
 
         atacante.marcarComoAtacado();
     }
+
 
     public void ataqueDirecto(CartaMonstruo atacante, Jugador oponente) {
         System.out.println(atacante.getNombre() + " ataca directamente a "

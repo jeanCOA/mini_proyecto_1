@@ -58,38 +58,103 @@ public class Jugador {
         }
     }
 
+    // public void jugarCarta(int indice, Contexto ctx) {
+    //     if (indice < 0 || indice >= mano.size()) return;
+
+    //     Carta carta = mano.get(indice);
+
+    //     if (carta.getTipo().equals("MONSTRUO")) {
+    //         if (!yaJugoCartaEsteTurno) {
+
+
+    //             CartaMonstruo monstruo = (CartaMonstruo) carta;
+
+    //             campo.add((CartaMonstruo) carta);
+    //             mano.remove(indice);
+    //             yaJugoCartaEsteTurno = true;
+
+
+    //             if (ctx.getCampo().isEsPrimerTurno()) {
+    //                 monstruo.setPuedeAtacar(false);
+    //             } else {
+    //                 monstruo.setPuedeAtacar(true);
+    //             }
+                
+    //             System.out.println(nombre + " invocó a " + carta.getNombre());
+    //         } else {
+    //             System.out.println("Ya has invocado un monstruo este turno.");
+    //         }
+            
+    //     } else if (carta.getTipo().equals("MAGICA")) {
+    //         if (carta instanceof Activable) {
+    //             ((Activable) carta).activar(ctx);
+    //             mano.remove(indice);
+                
+    //             yaJugoCartaEsteTurno = true;
+                
+    //             if (ctx.getCampo().hayGanador()) return;
+    //         }
+    //     }
+    // }
+    private void cambiarPosicionDesdeMenu(Contexto ctx) {
+        if (campo.isEmpty()) {
+            System.out.println("No tienes monstruos en campo para cambiar de posición.");
+            return;
+        }
+
+        System.out.println("\n── Elige el monstruo para cambiar posición ──");
+        for (int i = 0; i < campo.size(); i++) {
+            System.out.println("  " + (i + 1) + ". " + campo.get(i));
+        }
+        System.out.println("  0. Cancelar");
+        System.out.print("Opción: ");
+
+        String input = scanner.nextLine().trim();
+        int eleccion;
+        try {
+            eleccion = Integer.parseInt(input);
+        } catch (NumberFormatException e) {
+            System.out.println("Entrada inválida.");
+            return;
+        }
+
+        if (eleccion == 0) return;
+        if (eleccion < 1 || eleccion > campo.size()) {
+            System.out.println("Número fuera de rango.");
+            return;
+        }
+
+        campo.get(eleccion - 1).cambiarPosicion();
+    }
+    
+
+    //---------------------------------------------------------------
+
     public void jugarCarta(int indice, Contexto ctx) {
         if (indice < 0 || indice >= mano.size()) return;
+
+        if (yaJugoCartaEsteTurno) {
+            System.out.println("Ya has jugado una carta este turno. No puedes jugar más cartas.");
+            return;
+        }
 
         Carta carta = mano.get(indice);
 
         if (carta.getTipo().equals("MONSTRUO")) {
-            if (!yaJugoCartaEsteTurno) {
+            CartaMonstruo monstruo = (CartaMonstruo) carta;
+            campo.add(monstruo);
+            mano.remove(indice);
+            yaJugoCartaEsteTurno = true;
 
-
-                CartaMonstruo monstruo = (CartaMonstruo) carta;
-
-                campo.add((CartaMonstruo) carta);
-                mano.remove(indice);
-                yaJugoCartaEsteTurno = true;
-
-
-                if (ctx.getCampo().isEsPrimerTurno()) {
-                    monstruo.setPuedeAtacar(false);
-                } else {
-                    monstruo.setPuedeAtacar(true);
-                }
-                
-                System.out.println(nombre + " invocó a " + carta.getNombre());
-            } else {
-                System.out.println("Ya has invocado un monstruo este turno.");
-            }
+            
+            monstruo.setPuedeAtacar(ctx.getCampo().isEsPrimerTurno() ? false : true);
+            
+            System.out.println(nombre + " invocó a " + carta.getNombre() + " en modo ATAQUE.");
             
         } else if (carta.getTipo().equals("MAGICA")) {
             if (carta instanceof Activable) {
                 ((Activable) carta).activar(ctx);
                 mano.remove(indice);
-                
                 yaJugoCartaEsteTurno = true;
                 
                 if (ctx.getCampo().hayGanador()) return;
@@ -146,6 +211,7 @@ public class Jugador {
             }
 
             System.out.println("  3. Terminar turno");
+            System.out.println("  4. Cambiar posición de un monstruo");
             System.out.print("Opción: ");
 
             String input = scanner.nextLine().trim();
@@ -160,6 +226,9 @@ public class Jugador {
                 case "3":
                     turnoTerminado = true;
                     System.out.println(nombre + " termina su turno.");
+                    break;
+                case "4":                                      
+                    cambiarPosicionDesdeMenu(ctx);
                     break;
                 default:
                     System.out.println("Opción inválida. Intenta de nuevo.");

@@ -6,7 +6,8 @@ public class CartaMonstruo extends Carta {
     private short boostAtk;
     private short boostDef;
     private boolean puedeAtacar;
- 
+    private boolean enModoDefensa;   
+
     public CartaMonstruo(String nombre, byte nivelCarta, short atk, short def) {
         super(nombre);
         this.nivelCarta = nivelCarta;
@@ -15,6 +16,7 @@ public class CartaMonstruo extends Carta {
         this.boostAtk = 0;
         this.boostDef = 0;
         this.puedeAtacar = false;
+        this.enModoDefensa = false;
     }
  
     public int getnivelCarta() {
@@ -36,46 +38,60 @@ public class CartaMonstruo extends Carta {
     public void setPuedeAtacar(boolean puedeAtacar) {
         this.puedeAtacar = puedeAtacar;
     }
- 
+
+    public boolean estaEnModoDefensa() {
+        return enModoDefensa;
+    }
+
+    public void cambiarPosicion() {
+        this.enModoDefensa = !this.enModoDefensa;
+        String modo = enModoDefensa ? "DEFENSA" : "ATAQUE";
+        System.out.println(">>> " + getNombre() + " cambió a modo " + modo + ".");
+    }
+
+
     public void aplicarBoostAtk(short incremento) {
         boostAtk = incremento;
     }
- 
+
     public void aplicarBoostDef(short incremento) {
         boostDef = incremento;
     }
- 
+
     public void resetBoosts() {
         boostAtk = 0;
         boostDef = 0;
     }
- 
+
     public void reiniciarAtaques() {
         puedeAtacar = true;
         resetBoosts();
     }
- 
+
     public void marcarComoAtacado() {
         puedeAtacar = false;
     }
- 
+
     public void resetTurno() {
         puedeAtacar = true;
     }
- 
+
     public void decrementarMejora() {
         boostAtk = 0;
         boostDef = 0;
     }
- 
+
     @Override
     public String getTipo() {
         return "MONSTRUO";
     }
- 
+
     @Override
     public String toString() {
-        return "[MONSTRUO] " + getNombre() + " | nivelCarta: " + nivelCarta + " | ATK: " + getAtk() + " | DEF: " + getDef();
+        String modo = enModoDefensa ? "[DEFENSA]" : "[ATAQUE]";
+        return modo + " " + getNombre() 
+            + " | nivel: " + nivelCarta 
+            + " | ATK: " + getAtk() 
+            + " | DEF: " + getDef();
     }
-    
 }

@@ -6,13 +6,17 @@ public class Mazo {
     // lista de objetos Carta
     private List<Carta> cartas;
 
-    public Mazo() {
+    public Mazo(boolean usarFabrica) {
         this.cartas = new ArrayList<>();
+        if(usarFabrica){
+            this.agregarCartas(FabricaDeCartas.crearMazoCompleto());
+            this.barajar();
+        }
     }
 
     // Mezcla las cartas aleatoriamente
     public void barajar() {
-        Collections.shuffle(cartas); //collections:Contiene los metodos y shuffle:Mezcla todo.
+        Collections.shuffle(cartas); 
         System.out.println("El mazo ha sido barajado.");
     }
 
@@ -29,7 +33,7 @@ public class Mazo {
         return cartas.isEmpty();
     }
 
-    // Cuántas cartas quedan
+    // Cuantas cartas quedan
     public int tamano() {
         return cartas.size();
     }
@@ -38,7 +42,7 @@ public class Mazo {
         List<Carta> manoRepartida = new ArrayList<>();
         
         for (int i = 0; i < n; i++) {
-            Carta cartaRobada = this.robar(); // Reutilizamos el método robar() que ya maneja el remove(0)
+            Carta cartaRobada = this.robar(); // Reutilizamos el método robar() ya quemaneja el remove(0)
             
             if (cartaRobada != null) {
                 manoRepartida.add(cartaRobada);
@@ -51,13 +55,13 @@ public class Mazo {
         return manoRepartida;
     }
 
-    // Para meter las que vienen de la Fábrica
+    // Para meter las que vienen de la fabrica
     public void agregarCartas(List<? extends Carta> nuevasCartas) {
         this.cartas.addAll(nuevasCartas);
     }
     
-    // Devuelve una copia de la lista (según el UML v4)
+    
     public List<Carta> getCartas() {
-        return new ArrayList<>(cartas); // Copia defensiva
+        return new ArrayList<>(cartas);
     }
-}
+} 

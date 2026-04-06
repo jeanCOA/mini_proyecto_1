@@ -1,4 +1,4 @@
-public class EspadaDeZeus extends CartaMagica implements Activable {
+public class EspadaDeZeus extends CartaMagica {
     private short boostAtk = 500;
 
     public EspadaDeZeus() {
@@ -8,7 +8,6 @@ public class EspadaDeZeus extends CartaMagica implements Activable {
     @Override
     public void activar(Contexto ctx) {
         System.out.println(">>> Espada de Zeus otorga +" + boostAtk + " ATK.");
-        // Según UML: invoca campo.aplicarBoostAtk
         ctx.getCampo().aplicarBoostAtk(ctx.getJugadorActivo(), boostAtk);
     }
 }

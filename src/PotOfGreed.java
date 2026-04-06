@@ -1,4 +1,4 @@
-public class PotOfGreed extends CartaMagica implements Activable {
+public class PotOfGreed extends CartaMagica {
     public PotOfGreed() {
         super("Pot of Greed", "Roba 2 cartas de tu mazo inmediatamente.");
     }

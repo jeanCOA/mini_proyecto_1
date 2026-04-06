@@ -11,8 +11,7 @@ public class LlamadaDelAbismo extends CartaMagica {
         System.out.println(">>> Llamada del Abismo: Pagando " + costo + " LP para robar.");
         j.recibirDanio(costo); // Usa recibirDanio para que LP no baje de 0
         j.robarCarta();
-        // El bucle principal en iniciarDuelo() detecta LP<=0 con hayGanador()
-        // Si LP quedó en 0, el duelo termina al verificar hayGanador() en el while
+        
         if (j.getLp() <= 0) {
             System.out.println(">>> " + j.getNombre()
                 + " quedó sin LP al activar Llamada del Abismo. ¡Pierde!");

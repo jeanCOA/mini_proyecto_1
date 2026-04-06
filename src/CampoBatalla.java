@@ -16,27 +16,25 @@ public class CampoBatalla {
     }
 
     public void iniciarDuelo() {
-        System.out.println("╔══════════════════════════════╗");
-        System.out.println("║   ¡DUELO DE YU-GI-OH!        ║");
-        System.out.println("╚══════════════════════════════╝");
+        
 
-        // 1. Repartir cartas iniciales
+       
         repartirCartasIniciales();
 
-        // 2. Elegir al azar quién empieza
+        
         Random random = new Random();
         jugadorActivo = random.nextBoolean() ? jugador1 : jugador2;
 
-        System.out.println("\n🎲 " + jugadorActivo.getNombre() + " empieza el duelo!\n");
+        System.out.println("\n " + jugadorActivo.getNombre() + " empieza el duelo!\n");
 
-        // 3. Bucle del duelo
+        
         while (!hayGanador()) {
             ejecutarTurno();
-            // Verificar ganador después de cada turno (ej: LlamadaDelAbismo)
+            
             if (hayGanador()) break;
         }
 
-        // 4. Anunciar ganador
+        
         Jugador ganador = getGanador();
         if (ganador != null) {
             System.out.println("\n╔══════════════════════════════╗");
@@ -68,20 +66,20 @@ public class CampoBatalla {
         System.out.println("  TURNO " + turnoActual + " : " + jugadorActivo.getNombre());
         System.out.println("══════════════════════════════");
 
-        // CORRECCIÓN: resetear estado del jugador al INICIO de su turno
+        
         jugadorActivo.resetTurno();
 
         if (esPrimerTurno) {
-            // El jugador que empieza NO roba carta y NO puede atacar (US-13)
+            
             System.out.println("[Primer turno] " + jugadorActivo.getNombre()
                 + " no roba carta y no puede atacar.");
 
-            // Bloquear ataques a todos los monstruos del campo (por si acaso)
+            
             for (CartaMonstruo m : jugadorActivo.getCampo()) {
                 m.marcarComoAtacado();
             }
         } else {
-            // Robo automático al inicio del turno (US-11)
+            
             if (!jugadorActivo.tieneCartasEnMazo()) {
                 System.out.println(jugadorActivo.getNombre()
                     + " no tiene cartas en el mazo. ¡Pierde el duelo!");
@@ -90,13 +88,13 @@ public class CampoBatalla {
             jugadorActivo.robarCarta();
             System.out.println(jugadorActivo.getNombre() + " robó una carta.");
 
-            // Limpiar boosts temporales al inicio del turno del jugador que los recibió
+            
             for (CartaMonstruo m : jugadorActivo.getCampo()) {
                 m.decrementarMejora();
             }
         }
 
-        // Turno interactivo
+        
         Contexto ctx = new Contexto(jugadorActivo, getOponente(), this);
         jugadorActivo.turnoActivo(ctx);
 
@@ -104,36 +102,31 @@ public class CampoBatalla {
     }
 
     public void cambiarTurno() {
-        // CORRECCIÓN: ya NO llamamos resetTurno() aquí, se hace al inicio del turno
+        
         jugadorActivo = (jugadorActivo == jugador1) ? jugador2 : jugador1;
         esPrimerTurno = false;
         System.out.println("\nTurno de " + jugadorActivo.getNombre() + ".");
     }
 
-    /**
-     * Resuelve el combate ATK vs ATK entre dos monstruos en posición de ataque.
-     * US-14: si ATK atacante > ATK defensor → defensor destruido, diferencia resta LP al oponente.
-     *         si ATK atacante == ATK defensor → ambos destruidos.
-     *         si ATK atacante < ATK defensor → atacante repelido, diferencia resta LP al jugador activo.
-     */
+
     public void resolverCombate(CartaMonstruo atacante, CartaMonstruo defensor, Jugador jugActivo, Jugador oponente) {
         System.out.println(atacante.getNombre() + " ataca a " + defensor.getNombre() + "!");
 
         if (atacante.getAtk() > defensor.getAtk()) {
-            // Atacante gana: defensor destruido, daño al oponente
+            
             int danio = atacante.getAtk() - defensor.getAtk();
             eliminarMonstruo(defensor, oponente);
             oponente.recibirDanio(danio);
             System.out.println(defensor.getNombre() + " destruido. " + oponente.getNombre() + " pierde " + danio + " LP.");
 
         } else if (atacante.getAtk() == defensor.getAtk()) {
-            // Empate: ambos destruidos, sin daño a LP
+        
             eliminarMonstruo(defensor, oponente);
             eliminarMonstruo(atacante, jugActivo);
             System.out.println("¡Empate! Ambos monstruos fueron destruidos.");
 
         } else {
-            // Atacante pierde: CORRECCIÓN — el jugador activo recibe la diferencia en daño
+        
             int danio = defensor.getAtk() - atacante.getAtk();
             jugActivo.recibirDanio(danio);
             System.out.println(atacante.getNombre() + " fue repelido. "
@@ -229,6 +222,7 @@ public class CampoBatalla {
             + " | Monstruos en campo: " + jugador1.getCampo().size());
         for (CartaMonstruo m : jugador1.getCampo()) {
             System.out.println("   " + m);
+            System.out.println("-----------------------------------------------");
         }
         System.out.println(jugador2.getNombre() + " | LP: " + jugador2.getLp()
             + " | Cartas en mano: " + jugador2.getMano().size()

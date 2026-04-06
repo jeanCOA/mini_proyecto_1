@@ -65,14 +65,26 @@ public class Jugador {
 
         if (carta.getTipo().equals("MONSTRUO")) {
             if (!yaJugoCartaEsteTurno) {
+
+
+                CartaMonstruo monstruo = (CartaMonstruo) carta;
+
                 campo.add((CartaMonstruo) carta);
                 mano.remove(indice);
                 yaJugoCartaEsteTurno = true;
+
+
+                if (ctx.getCampo().isEsPrimerTurno()) {
+                    monstruo.setPuedeAtacar(false);
+                } else {
+                    monstruo.setPuedeAtacar(true);
+                }
                 
                 System.out.println(nombre + " invocó a " + carta.getNombre());
             } else {
                 System.out.println("Ya has invocado un monstruo este turno.");
             }
+            
         } else if (carta.getTipo().equals("MAGICA")) {
             if (carta instanceof Activable) {
                 ((Activable) carta).activar(ctx);

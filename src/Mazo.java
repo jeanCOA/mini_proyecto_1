@@ -64,4 +64,4 @@ public class Mazo {
     public List<Carta> getCartas() {
         return new ArrayList<>(cartas); // Copia defensiva
     }
-}
+} 

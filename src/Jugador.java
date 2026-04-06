@@ -22,8 +22,8 @@ public class Jugador {
     }
 
     public void setMazo(Mazo mazo) {
-    this.mazo = mazo;
-}
+        this.mazo = mazo;
+    }
 
     public String getNombre() {
         return nombre;
@@ -65,15 +65,11 @@ public class Jugador {
 
         if (carta.getTipo().equals("MONSTRUO")) {
             if (!yaJugoCartaEsteTurno) {
-                
-                CartaMonstruo monstruo = (CartaMonstruo) carta;
-
                 campo.add((CartaMonstruo) carta);
                 mano.remove(indice);
                 yaJugoCartaEsteTurno = true;
-
-                //1
-                // monstruo.setPuedeAtacar(true);
+                // El monstruo recién invocado NO puede atacar este turno (US-13)
+                // puedeAtacar permanece en false (valor por defecto)
                 System.out.println(nombre + " invocó a " + carta.getNombre());
             } else {
                 System.out.println("Ya has invocado un monstruo este turno.");
@@ -82,7 +78,10 @@ public class Jugador {
             if (carta instanceof Activable) {
                 ((Activable) carta).activar(ctx);
                 mano.remove(indice);
-                System.out.println(nombre + " activó la magia " + carta.getNombre());
+                // CORRECCIÓN: las magias también cuentan como la carta jugada del turno (US-12)
+                yaJugoCartaEsteTurno = true;
+                // Verificar derrota inmediata tras efectos (ej: LlamadaDelAbismo)
+                if (ctx.getCampo().hayGanador()) return;
             }
         }
     }
@@ -90,7 +89,7 @@ public class Jugador {
     public void recibirDanio(int pts) {
         this.Lp -= pts;
         if (this.Lp < 0) this.Lp = 0;
-        System.out.println(nombre + " pierde " + pts + " LP.");
+        System.out.println(nombre + " pierde " + pts + " LP. (LP restante: " + this.Lp + ")");
     }
 
     public void curarDanio(int pts) {
@@ -110,6 +109,12 @@ public class Jugador {
         return !yaJugoCartaEsteTurno;
     }
 
+    /**
+     * CORRECCIÓN: resetTurno ahora solo resetea los flags del jugador.
+     * Se llama al INICIO del turno desde ejecutarTurno() en CampoBatalla.
+     * Los monstruos recién invocados siguen sin poder atacar (puedeAtacar=false por defecto).
+     * Solo los monstruos que YA estaban en campo desde el turno anterior pueden atacar.
+     */
     public void resetTurno() {
         this.yaJugoCartaEsteTurno = false;
         for (CartaMonstruo m : campo) {
@@ -122,11 +127,19 @@ public class Jugador {
 
         boolean turnoTerminado = false;
 
-        while (!turnoTerminado) {
+        while (!turnoTerminado && !ctx.getCampo().hayGanador()) {
             mostrarEstado(ctx);
             System.out.println("\n¿Qué deseas hacer?");
             System.out.println("  1. Jugar una carta");
-            System.out.println("  2. Atacar con un monstruo");
+
+            // CORRECCIÓN: mostrar opción de ataque solo si hay monstruos que puedan atacar
+            boolean hayAtacantes = campo.stream().anyMatch(CartaMonstruo::puedeAtacar);
+            if (hayAtacantes && !ctx.getOponente().getCampo().isEmpty() || hayAtacantes) {
+                System.out.println("  2. Atacar con un monstruo");
+            } else {
+                System.out.println("  2. Atacar con un monstruo [no disponible]");
+            }
+
             System.out.println("  3. Terminar turno");
             System.out.print("Opción: ");
 
@@ -183,6 +196,13 @@ public class Jugador {
     private void jugarCartaDesdeMenu(Contexto ctx) {
         if (mano.isEmpty()) {
             System.out.println("No tienes cartas en la mano.");
+            return;
+        }
+
+        // CORRECCIÓN: Si ya jugó carta, solo puede jugar magias si queda alguna
+        // (el backlog exige 1 carta por turno total — monstruo O magia)
+        if (yaJugoCartaEsteTurno) {
+            System.out.println("Ya jugaste una carta este turno. No puedes jugar otra.");
             return;
         }
 
@@ -255,7 +275,7 @@ public class Jugador {
         Jugador oponente = ctx.getOponente();
 
         if (oponente.getCampo().isEmpty()) {
-            // Ataque directo
+            // Ataque directo (US-15)
             ctx.getCampo().ataqueDirecto(atacante, oponente);
         } else {
             // Elegir monstruo defensor
@@ -283,7 +303,8 @@ public class Jugador {
             }
 
             CartaMonstruo defensor = defensores.get(eleccionDef - 1);
-            ctx.getCampo().resolverCombate(atacante, defensor);
+            // CORRECCIÓN: pasar jugActivo y oponente como parámetros
+            ctx.getCampo().resolverCombate(atacante, defensor, this, oponente);
         }
     }
 }

@@ -6,6 +6,7 @@ public class Jugador {
     private String nombre;
     private short Lp = 8000;
     private boolean yaJugoCartaEsteTurno = false;
+    private boolean yaAtacoEsteTurno = false; 
     private List<Carta> mano;
     private Mazo mazo;
     private List<CartaMonstruo> campo;
@@ -19,6 +20,7 @@ public class Jugador {
         this.mano = new ArrayList<>();
         this.campo = new ArrayList<>();
         this.yaJugoCartaEsteTurno = false;
+        this.yaAtacoEsteTurno = false;
     }
 
     public void setMazo(Mazo mazo) {
@@ -58,44 +60,7 @@ public class Jugador {
         }
     }
 
-    // public void jugarCarta(int indice, Contexto ctx) {
-    //     if (indice < 0 || indice >= mano.size()) return;
 
-    //     Carta carta = mano.get(indice);
-
-    //     if (carta.getTipo().equals("MONSTRUO")) {
-    //         if (!yaJugoCartaEsteTurno) {
-
-
-    //             CartaMonstruo monstruo = (CartaMonstruo) carta;
-
-    //             campo.add((CartaMonstruo) carta);
-    //             mano.remove(indice);
-    //             yaJugoCartaEsteTurno = true;
-
-
-    //             if (ctx.getCampo().isEsPrimerTurno()) {
-    //                 monstruo.setPuedeAtacar(false);
-    //             } else {
-    //                 monstruo.setPuedeAtacar(true);
-    //             }
-                
-    //             System.out.println(nombre + " invocó a " + carta.getNombre());
-    //         } else {
-    //             System.out.println("Ya has invocado un monstruo este turno.");
-    //         }
-            
-    //     } else if (carta.getTipo().equals("MAGICA")) {
-    //         if (carta instanceof Activable) {
-    //             ((Activable) carta).activar(ctx);
-    //             mano.remove(indice);
-                
-    //             yaJugoCartaEsteTurno = true;
-                
-    //             if (ctx.getCampo().hayGanador()) return;
-    //         }
-    //     }
-    // }
     private void cambiarPosicionDesdeMenu(Contexto ctx) {
         if (campo.isEmpty()) {
             System.out.println("No tienes monstruos en campo para cambiar de posición.");
@@ -187,6 +152,7 @@ public class Jugador {
 
     public void resetTurno() {
         this.yaJugoCartaEsteTurno = false;
+        this.yaAtacoEsteTurno = false; 
         for (CartaMonstruo m : campo) {
             m.setPuedeAtacar(true);
         }
@@ -306,6 +272,12 @@ public class Jugador {
     }
 
     private void atacarDesdeMenu(Contexto ctx) {
+        if (yaAtacoEsteTurno) {
+            System.out.println("Ya realizaste un ataque este turno.");
+            return;
+        }
+
+
         if (campo.isEmpty()) {
             System.out.println("No tienes monstruos en campo.");
             return;
@@ -379,5 +351,6 @@ public class Jugador {
             
             ctx.getCampo().resolverCombate(atacante, defensor, this, oponente);
         }
+        yaAtacoEsteTurno = true;
     }
-}
+}   

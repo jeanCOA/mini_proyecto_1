@@ -44,7 +44,9 @@ public class CartaMonstruo extends Carta {
     }
 
     public void cambiarPosicion() {
+        // Si era true (Defensa), pasa a false (Ataque). Si era false, pasa a true.
         this.enModoDefensa = !this.enModoDefensa;
+        // Es un "if-else" rapido: si 'enModoDefensa' es true, asigna "DEFENSA", de lo contrario asigna "ATAQUE".
         String modo = enModoDefensa ? "DEFENSA" : "ATAQUE";
         System.out.println(">>> " + getNombre() + " cambió a modo " + modo + ".");
     }

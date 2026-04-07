@@ -93,35 +93,53 @@ public class Jugador {
     }
     
 
-    //---------------------------------------------------------------
-
     public void jugarCarta(int indice, Contexto ctx) {
+        // vuelve a verificar el indice, por si algo fallo en la verificacion de jugarCartaDesdeMenu()
         if (indice < 0 || indice >= mano.size()) return;
 
+        // vuelve a verificar si ya jugo carta este turno
         if (yaJugoCartaEsteTurno) {
             System.out.println("Ya has jugado una carta este turno. No puedes jugar más cartas.");
             return;
         }
 
+        // crea una variable carta para guardar la carta que el usuario quiere jugar
         Carta carta = mano.get(indice);
 
+        // .getTipo trae el tipo de la carta, y con .equals lo compara con lo que hay dentro de los parentesis
+        // si retorna TRUE entonces ejecuta el if
         if (carta.getTipo().equals("MONSTRUO")) {
+
+            // crea una variable monstruo, y convierte lo que habia guardado en carta, a CartaMonstruo (asi como cuando se convierte un string a int)
+            // se hace esa conversion para poder acceder a todos los atributos y metodos de CartaMonstruo. (Para aclarar, eso solo funciona si es un monstruo, por eso se ejecuta esto dentro del IF)
             CartaMonstruo monstruo = (CartaMonstruo) carta;
+            // se añade el monstruo elegido al campo de batalla del jugador activo
             campo.add(monstruo);
+            // y aqui se remueve de la mano
             mano.remove(indice);
+
+            // la flag se pone en true para evitar errores
             yaJugoCartaEsteTurno = true;
 
-            
+            // aqui se tiene un if comprimido donde se evalua si es el primer turno, para que las cartas jugadas en el 
+            // primer turno no puedan atacar. (todo lo que hay entre parentesis retorna un booleano, y eso se manda como argumento) a .setPuedeAtacar
             monstruo.setPuedeAtacar(ctx.getCampo().isEsPrimerTurno() ? false : true);
             
             System.out.println(nombre + " invocó a " + carta.getNombre() + " en modo ATAQUE.");
             
-        } else if (carta.getTipo().equals("MAGICA")) {
+        } else if (carta.getTipo().equals("MAGICA")) { 
+            
+            //hace lo mismo que el if pero con los tipos de cartas magicas
+            // para este condicional se aprovecha que las cartas magicas tienen implementado el Activable
             if (carta instanceof Activable) {
+                // se hace el casteo, y se activa la carta con el contexto de el duelo
+                // para entenderlo mejor, basicamente se llama a la carta especifica y ejecuta el .activar de esa carta
                 ((Activable) carta).activar(ctx);
+                // se remueve de la mano porque ya se jugo
                 mano.remove(indice);
                 yaJugoCartaEsteTurno = true;
                 
+                // evalua nuevamente si hay ganador
                 if (ctx.getCampo().hayGanador()) return;
             }
         }
@@ -161,16 +179,28 @@ public class Jugador {
     public void turnoActivo(Contexto ctx) {
         System.out.println("\n=== TURNO DE: " + nombre.toUpperCase() + " (LP: " + Lp + ") ===");
 
+        // al inicio del metodo se pone en false para evitar problemas
         boolean turnoTerminado = false;
 
+        // mientras el turnoTerminado siga siendo false, Y mediante el metodo hay ganador, revisa y retorna un booleano
+        // while (FALSE AND FALSE) ejecuta el bloque de codigo
         while (!turnoTerminado && !ctx.getCampo().hayGanador()) {
+
+            // Llama al metodo que retorna toda la informacion a consola de los atributos del jugador activo, para poder
+            // tener la informacion necesaria para jugar
             mostrarEstado(ctx);
             System.out.println("\n¿Qué deseas hacer?");
             System.out.println("  1. Jugar una carta");
 
-            
+            // Verifica si existe al menos un monstruo en el campo capaz de atacar.
+            // Usa un Stream para recorrer la lista y se detiene (anyMatch) en cuanto encuentra el primero que cumpla la condición.
             boolean hayAtacantes = campo.stream().anyMatch(CartaMonstruo::puedeAtacar);
-            if (hayAtacantes && !ctx.getOponente().getCampo().isEmpty() || hayAtacantes) {
+            
+
+            // entonces lo anterior era para el condicional y mostrar en el menu si puede o no atacar con un monstruo
+
+            // (si no puede es porque no tiene monstruos en campo)
+            if (hayAtacantes) {
                 System.out.println("  2. Atacar con un monstruo");
             } else {
                 System.out.println("  2. Atacar con un monstruo [no disponible]");
@@ -203,21 +233,36 @@ public class Jugador {
     }
 
     private void mostrarEstado(Contexto ctx) {
+        // Se crea un objeto jugador llamado oponente, el cual recibe toda la informacion del oponente mediante contexto
         Jugador oponente = ctx.getOponente();
+
+        // Se muestran primero en consola los datos de el jugador activo:
         System.out.println("\n──────────────────────────────");
         System.out.println("  " + nombre + " | LP: " + Lp
+                                //Aqui se hace uso directo del size
             + " | Cartas en mano: " + mano.size()
+                                //Aqui se hace uso del size mediante un metodo que retorna el size de mazo
             + " | Cartas en mazo: " + mazo.tamano());
         System.out.println("  Monstruos en campo:");
+
+        // condicional para verificar si hay monstruos en campo
         if (campo.isEmpty()) {
             System.out.println("    (ninguno)");
         } else {
+            // si SI HAY, se hace un bucle para recorrer y imprimir cuales hay
             for (int i = 0; i < campo.size(); i++) {
+                // aqui hago un .get para tener el monstruo i de la lista
                 CartaMonstruo m = campo.get(i);
+                // Aqui hago un condicional comprimido para poder guardar en una variable el estado del monstruo
+                // el metodo .puedeAtacar() retorna un boolean, si es true "puede atacar" y si es false, "no puede atacar este turno"
                 String estado = m.puedeAtacar() ? "puede atacar" : "no puede atacar este turno";
+                //Aqui se imprime directamente porque es un bucle entonces para imprimir todos los mosntruos en campo
                 System.out.println("    " + (i + 1) + ". " + m + " [" + estado + "]");
             }
         }
+
+        // SE HACE LO MISMO PERO LISTANDO LA INFORMACION DEL OPONENTE
+        // lo unico que no se hace es imprimir el estado de cartas del oponente si pueden atacar o no
         System.out.println("  ── Oponente: " + oponente.getNombre()
             + " | LP: " + oponente.getLp()
             + " | Cartas en mano: " + oponente.getMano().size()
@@ -234,17 +279,21 @@ public class Jugador {
     }
 
     private void jugarCartaDesdeMenu(Contexto ctx) {
+
+        // condicional para imprimir que si queria jugar una carta, le imprima que no tiene cartas en la mano
         if (mano.isEmpty()) {
             System.out.println("No tienes cartas en la mano.");
             return;
         }
 
-        
+        // condicional para que imprima si ya jugo una carta, que no puede jugar mas cartas
         if (yaJugoCartaEsteTurno) {
             System.out.println("Ya jugaste una carta este turno. No puedes jugar otra.");
             return;
         }
 
+        // si llego hasta este punto, es porque todo esta normal, entonces empieza el bucle para imprimir que cartas
+        // tiene en la mano
         System.out.println("\n── Tu mano ──");
         for (int i = 0; i < mano.size(); i++) {
             System.out.println("  " + (i + 1) + ". " + mano.get(i));
@@ -254,47 +303,63 @@ public class Jugador {
 
         String input = scanner.nextLine().trim();
         int eleccion;
+        // hace un try catch por si el usuario escribe datos raros
         try {
+            // el input, que es un string, lo convierte a un integer
             eleccion = Integer.parseInt(input);
         } catch (NumberFormatException e) {
             System.out.println("Entrada inválida.");
             return;
         }
 
+        // condicionales para validar la seleccion del usuario
         if (eleccion == 0) return;
+        
 
+        // si la eleccion es <1 OR eleccion supera el tamaño de la mano, manda mensaje y return
         if (eleccion < 1 || eleccion > mano.size()) {
             System.out.println("Número fuera de rango.");
             return;
         }
 
+        // llama al metodo jugar carta ( se resta 1 porque las listas empiezan desde 0)
+        // y si yo NO pusiera -1, en realidad estaria buscando una posicion mas adelante que la que yo quiero
         jugarCarta(eleccion - 1, ctx);
     }
 
     private void atacarDesdeMenu(Contexto ctx) {
+        // condicional para que no pueda atacar 2 veces
         if (yaAtacoEsteTurno) {
             System.out.println("Ya realizaste un ataque este turno.");
             return;
         }
 
-
+        // condicional para que no pueda atacar sin monstruos en campo
         if (campo.isEmpty()) {
             System.out.println("No tienes monstruos en campo.");
             return;
         }
 
-        // Filtrar monstruos que pueden atacar
+
+        // nueva lista vacia para llenarla con los monstruos que pueden atacar
         List<CartaMonstruo> disponibles = new ArrayList<>();
+        // bucle que recorre los monstruos en campo y los agrega a los disponibles para atacar
         for (CartaMonstruo m : campo) {
             if (m.puedeAtacar()) disponibles.add(m);
         }
 
+        // condicional para evaluar si hay disponibles, si esta vacio entonces no puede atacar ninguno en el turno
         if (disponibles.isEmpty()) {
             System.out.println("Ningún monstruo puede atacar este turno.");
             return;
         }
 
+
+        // si llego hasta aqui es porque si tienes monstruos disponibles y si puede atacar
+
         System.out.println("\n── Elige el monstruo atacante ──");
+
+        //bucle que imprime los monstruos para atacar
         for (int i = 0; i < disponibles.size(); i++) {
             System.out.println("  " + (i + 1) + ". " + disponibles.get(i));
         }
@@ -303,7 +368,10 @@ public class Jugador {
 
         String input = scanner.nextLine().trim();
         int eleccion;
+
+        //try catch para manejar errores de entrada
         try {
+            // para convertir de string a int
             eleccion = Integer.parseInt(input);
         } catch (NumberFormatException e) {
             System.out.println("Entrada inválida.");
@@ -311,30 +379,47 @@ public class Jugador {
         }
 
         if (eleccion == 0) return;
+        //condicional para evaluar si el INT esta en rango
         if (eleccion < 1 || eleccion > disponibles.size()) {
             System.out.println("Número fuera de rango.");
             return;
         }
 
+        // atributo de tipo CartaMonstruo para guardar la eleccion, (se elimina en los disponibles, la eleccion con el indice )
         CartaMonstruo atacante = disponibles.get(eleccion - 1);
+        
+        
+        // se trae la informacion del oponente para poder atacar sus monstruos o sus Life POints
         Jugador oponente = ctx.getOponente();
 
+
+        // condicional para evaluar si el campo oponente esta vacio
         if (oponente.getCampo().isEmpty()) {
             
+            // si esta vacio entonces ataca directamente sus Life Points
             ctx.getCampo().ataqueDirecto(atacante, oponente);
         } else {
             
+            //si no esta vacio, le da a el usuario para elegir que mounstro quiere atacar
             System.out.println("\n── Elige el monstruo a atacar ──");
+
+            // crea una lista con los monstruos del oponente
             List<CartaMonstruo> defensores = oponente.getCampo();
+
+            // la recorre para imprimirla
             for (int i = 0; i < defensores.size(); i++) {
                 System.out.println("  " + (i + 1) + ". " + defensores.get(i));
             }
             System.out.println("  0. Cancelar");
             System.out.print("Opción: ");
 
+
             String inputDef = scanner.nextLine().trim();
             int eleccionDef;
+            
+            // otra vez try catch para evitar errores de entrada
             try {
+                // conversion de String a int
                 eleccionDef = Integer.parseInt(inputDef);
             } catch (NumberFormatException e) {
                 System.out.println("Entrada inválida.");
@@ -347,10 +432,14 @@ public class Jugador {
                 return;
             }
 
+            // de los monstruos en campo del defensor, se elimina el que yo elegi (porque lo ataque)
             CartaMonstruo defensor = defensores.get(eleccionDef - 1);
             
+            // se llama al metodo para resolverCombate (para hacer los procesos de ataque ENTRE monstruos)
             ctx.getCampo().resolverCombate(atacante, defensor, this, oponente);
         }
+
+        // al final de todo el codigo pone la flag en True, para que no permita que ataque mas veces
         yaAtacoEsteTurno = true;
     }
 }   

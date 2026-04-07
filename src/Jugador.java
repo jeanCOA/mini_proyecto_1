@@ -62,11 +62,14 @@ public class Jugador {
 
 
     private void cambiarPosicionDesdeMenu(Contexto ctx) {
+        //  condicional para ver si el campo esta vacio
         if (campo.isEmpty()) {
             System.out.println("No tienes monstruos en campo para cambiar de posición.");
             return;
         }
 
+
+        // Elegir monstruo
         System.out.println("\n── Elige el monstruo para cambiar posición ──");
         for (int i = 0; i < campo.size(); i++) {
             System.out.println("  " + (i + 1) + ". " + campo.get(i));
@@ -89,6 +92,7 @@ public class Jugador {
             return;
         }
 
+        // se elige del campo y se llama a cambiarPosicion
         campo.get(eleccion - 1).cambiarPosicion();
     }
     
@@ -220,10 +224,12 @@ public class Jugador {
                     atacarDesdeMenu(ctx);
                     break;
                 case "3":
+
+                    // aqui no llama ningun metodo sino que directamente termina el turno con la flag en true
                     turnoTerminado = true;
                     System.out.println(nombre + " termina su turno.");
                     break;
-                case "4":                                      
+                case "4":
                     cambiarPosicionDesdeMenu(ctx);
                     break;
                 default:
